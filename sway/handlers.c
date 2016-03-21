@@ -1086,6 +1086,21 @@ static void handle_wlc_ready(void) {
 		free(line);
 		list_del(config->cmd_queue, 0);
 	}
+	// VT220 stuff
+	// Adds a made up output that we can use for a tmux window
+	// connected to my vt220
+	swayc_t *output = new_swayc(C_OUTPUT);
+	output->name = "VT220";
+	output->handle = UINTPTR_MAX;
+	output->width = 1000;
+	output->height = 1000;
+	output->unmanaged = create_list();
+	output->bg_pid = -1;
+	add_child(&root_container, output);
+	output->x = -1000;
+	output->y = 0;
+	new_workspace(output, "__VT220");
+	// End VT220 stuff
 }
 
 void register_wlc_handlers() {

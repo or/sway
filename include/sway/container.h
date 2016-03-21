@@ -354,4 +354,6 @@ void close_views(swayc_t *container);
  */
 swayc_t *swayc_change_layout(swayc_t *container, enum swayc_layouts layout);
 
+swayc_t *new_swayc(enum swayc_types type);
+
 #endif

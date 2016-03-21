@@ -981,10 +981,14 @@ static void arrange_windows_r(swayc_t *container, double width, double height) {
 			struct wlc_size resolution;
 			output_get_scaled_size(container->handle, &resolution);
 			width = resolution.w; height = resolution.h;
-			// output must have correct size due to e.g. seamless mouse,
-			// but a workspace might be smaller depending on panels.
-			container->width = width;
-			container->height = height;
+			if (container->handle != UINTPTR_MAX) {
+				struct wlc_size resolution = *wlc_output_get_resolution(container->handle);
+				width = resolution.w; height = resolution.h;
+				// output must have correct size due to e.g. seamless mouse,
+				// but a workspace might be smaller depending on panels.
+				container->width = width;
+				container->height = height;
+			}
 		}
 		// arrange all workspaces:
 		for (i = 0; i < container->children->length; ++i) {
@@ -1033,6 +1037,11 @@ static void arrange_windows_r(swayc_t *container, double width, double height) {
 		break;
 	case C_VIEW:
 		{
+			swayc_t *output = swayc_parent_by_type(container, C_OUTPUT);
+			if (output->handle == UINTPTR_MAX) {
+				sway_log(L_DEBUG, "Setting view invisible due to vt220");
+				wlc_view_set_mask(container->handle, 0);
+			}
 			container->width = width;
 			container->height = height;
 			update_geometry(container);
