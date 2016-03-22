@@ -483,6 +483,20 @@ static bool handle_view_created(wlc_handle handle) {
 		if (workspace && workspace->fullscreen) {
 			set_focused_container(workspace->fullscreen);
 		}
+		// if parent container is a workspace, newview its only child and
+		// layout is tabbed/stacked, add a container around newview
+		swayc_t *parent_container = newview->parent;
+		if (parent_container && parent_container->type == C_WORKSPACE &&
+			parent_container->children && parent_container->children->length == 1 &&
+			(parent_container->layout == L_TABBED || parent_container->layout == L_STACKED)) {
+			swayc_t *container = new_container(newview, parent_container->layout);
+			set_focused_container(newview);
+			arrange_windows(container, -1, -1);
+		}
+		output = swayc_parent_by_type(newview, C_OUTPUT); // may have changed
+		if (output->handle != UINTPTR_MAX) {
+			wlc_view_set_mask(handle, VISIBLE);
+		}
 	} else {
 		swayc_t *output = swayc_parent_by_type(focused, C_OUTPUT);
 		wlc_handle *h = malloc(sizeof(wlc_handle));
@@ -1074,6 +1088,7 @@ bool handle_pointer_scroll(wlc_handle view, uint32_t time, const struct wlc_modi
 
 static void handle_wlc_ready(void) {
 	sway_log(L_DEBUG, "Compositor is ready, executing cmds in queue");
+<<<<<<< HEAD
 	// Execute commands until there are none left
 	config->active = true;
 	while (config->cmd_queue->length) {
@@ -1086,6 +1101,8 @@ static void handle_wlc_ready(void) {
 		free(line);
 		list_del(config->cmd_queue, 0);
 	}
+=======
+>>>>>>> Fix issues with autospawning terminal
 	// VT220 stuff
 	// Adds a made up output that we can use for a tmux window
 	// connected to my vt220
@@ -1101,6 +1118,18 @@ static void handle_wlc_ready(void) {
 	output->y = 0;
 	new_workspace(output, "__VT220");
 	// End VT220 stuff
+	// Execute commands until there are none left
+	config->active = true;
+	while (config->cmd_queue->length) {
+		char *line = config->cmd_queue->items[0];
+		struct cmd_results *res = handle_command(line);
+		if (res->status != CMD_SUCCESS) {
+			sway_log(L_ERROR, "Error on line '%s': %s", line, res->error);
+		}
+		free_cmd_results(res);
+		free(line);
+		list_del(config->cmd_queue, 0);
+	}
 }
 
 void register_wlc_handlers() {
