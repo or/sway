@@ -311,6 +311,10 @@ void ipc_bar_init(struct bar *bar, const char *bar_id) {
 			}
 		}
 
+		if (strcmp("VT220", name) == 0) {
+			use_output = false;
+		}
+
 		if (!use_output) {
 			continue;
 		}
