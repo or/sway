@@ -1088,7 +1088,6 @@ bool handle_pointer_scroll(wlc_handle view, uint32_t time, const struct wlc_modi
 
 static void handle_wlc_ready(void) {
 	sway_log(L_DEBUG, "Compositor is ready, executing cmds in queue");
-<<<<<<< HEAD
 	// Execute commands until there are none left
 	config->active = true;
 	while (config->cmd_queue->length) {
@@ -1101,8 +1100,6 @@ static void handle_wlc_ready(void) {
 		free(line);
 		list_del(config->cmd_queue, 0);
 	}
-=======
->>>>>>> Fix issues with autospawning terminal
 	// VT220 stuff
 	// Adds a made up output that we can use for a tmux window
 	// connected to my vt220
@@ -1118,18 +1115,6 @@ static void handle_wlc_ready(void) {
 	output->y = 0;
 	new_workspace(output, "__VT220");
 	// End VT220 stuff
-	// Execute commands until there are none left
-	config->active = true;
-	while (config->cmd_queue->length) {
-		char *line = config->cmd_queue->items[0];
-		struct cmd_results *res = handle_command(line);
-		if (res->status != CMD_SUCCESS) {
-			sway_log(L_ERROR, "Error on line '%s': %s", line, res->error);
-		}
-		free_cmd_results(res);
-		free(line);
-		list_del(config->cmd_queue, 0);
-	}
 }
 
 void register_wlc_handlers() {

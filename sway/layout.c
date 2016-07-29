@@ -982,8 +982,6 @@ static void arrange_windows_r(swayc_t *container, double width, double height) {
 			output_get_scaled_size(container->handle, &resolution);
 			width = resolution.w; height = resolution.h;
 			if (container->handle != UINTPTR_MAX) {
-				struct wlc_size resolution = *wlc_output_get_resolution(container->handle);
-				width = resolution.w; height = resolution.h;
 				// output must have correct size due to e.g. seamless mouse,
 				// but a workspace might be smaller depending on panels.
 				container->width = width;

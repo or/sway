@@ -6,6 +6,12 @@
 #include "list.h"
 
 void output_get_scaled_size(wlc_handle handle, struct wlc_size *size) {
+	if (handle == UINTPTR_MAX) {
+		swayc_t *c = swayc_by_handle(handle);
+		size->w = c->width;
+		size->h = c->height;
+		return;
+	}
 	*size = *wlc_output_get_resolution(handle);
 	uint32_t scale = wlc_output_get_scale(handle);
 	size->w /= scale;

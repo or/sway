@@ -34,7 +34,6 @@ static void update_focus(swayc_t *c) {
 			if (c->handle != UINTPTR_MAX) {
 				wlc_output_focus(c->handle);
 			}
-			container_map(prev, map_update_view_border, NULL);
 			break;
 
 		// Case where workspace changes
