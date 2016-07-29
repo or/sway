@@ -15,7 +15,7 @@ static json_object *ipc_json_create_rect(swayc_t *c) {
 	json_object_object_add(rect, "y", json_object_new_int((int32_t)c->y));
 
 	struct wlc_size size;
-	if (c->type == C_OUTPUT) {
+	if (c->type == C_OUTPUT && c->handle != UINTPTR_MAX) {
 		size = *wlc_output_get_resolution(c->handle);
 	} else {
 		size.w = c->width;
